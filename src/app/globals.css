@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: oklch(0.95 0.1 200);
+  /* ... other theme variables */
+}
+
+@layer base {
+  h1 {
+    @apply text-2xl font-bold;
+  }
+}
