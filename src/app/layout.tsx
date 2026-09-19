@@ -1,8 +1,7 @@
-// @ts-expect-error CSS is processed by Next.js at build time.
 import "./globals.css";
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {

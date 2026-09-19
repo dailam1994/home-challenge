@@ -11,13 +11,15 @@ export default function Modal({
   isOpen,
   onClose,
   title,
-  children,
+  children
 }: ModalProps) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
+        {/* biome-ignore lint/a11y/noStaticElementInteractions: Temporary custom modal backdrop; will be replaced by MUI Dialog */}
+        {/* biome-ignore lint/a11y/useKeyWithClickEvents: Temporary custom modal backdrop; will be replaced by MUI Dialog */}
         <div
           className="fixed inset-0 bg-black bg-opacity-25"
           onClick={onClose}

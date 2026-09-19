@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import data from "../../public/data.json";
 import BookCard from "@/components/BookCard";
-import Modal from "@/components/Modal";
 import BookForm from "@/components/BookForm";
-import { Book } from "@/types/book";
+import Modal from "@/components/Modal";
+import type { Book } from "@/types/book";
+import data from "../../public/data.json";
 
 export default function Page() {
   const [books, setBooks] = useState<Book[]>(data as Book[]);
@@ -15,7 +15,7 @@ export default function Page() {
   const handleAddBook = (newBook: Partial<Book>) => {
     const book: Book = {
       ...(newBook as Book),
-      id: Math.max(...books.map((b) => b.id)) + 1,
+      id: Math.max(...books.map((b) => b.id)) + 1
     };
     setBooks([...books, book]);
     setIsModalOpen(false);
@@ -47,6 +47,7 @@ export default function Page() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Book Gallery</h1>
         <button
+          type="button"
           onClick={() => {
             setSelectedBook(undefined);
             setIsModalOpen(true);

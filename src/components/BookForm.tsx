@@ -1,7 +1,8 @@
 "use client";
 
-import { Book } from "@/types/book";
-import { FormEvent, useState } from "react";
+import type { FormEvent } from "react";
+import { useState } from "react";
+import type { Book } from "@/types/book";
 
 interface BookFormProps {
   book?: Book;
@@ -24,7 +25,7 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
       coverImage: "",
       pages: 0,
       stock: 0,
-      rating: 0,
+      rating: 0
     }
   );
 

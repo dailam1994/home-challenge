@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Book } from "@/types/book";
+import type { Book } from "@/types/book";
 
 interface BookCardProps {
   book: Book;
@@ -29,12 +29,14 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
         </p>
         <div className="mt-4 flex gap-2">
           <button
+            type="button"
             onClick={() => onEdit(book)}
             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
           >
             Edit
           </button>
           <button
+            type="button"
             onClick={() => onDelete(book.id)}
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
