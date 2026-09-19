@@ -16,6 +16,8 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
           alt={`Cover of ${book.title}`}
           fill
           style={{ objectFit: "cover" }}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          priority={book.id === 1}
         />
       </div>
       <div className="p-4">
