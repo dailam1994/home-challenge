@@ -30,9 +30,52 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
     }
   );
 
+  const [errors, setErrors] = useState<Partial<Record<keyof Book, string>>>({});
+
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onSubmit(formData);
+  };
+
+  const handleBlur = (field: keyof Book, value: string | number): void => {
+    let error = "";
+
+    if (
+      (typeof value === "string" && !value.trim()) ||
+      (field === "price" && value === 0)
+    ) {
+      switch (field) {
+        case "title":
+          error = "Title is required";
+          break;
+        case "author":
+          error = "Author is required";
+          break;
+        case "price":
+          error = "Price is required and can not be 0";
+          break;
+        case "currency":
+          error = "Currency is required";
+          break;
+        case "isbn":
+          error = "ISBN is required";
+          break;
+        case "coverImage":
+          error = "Cover image is required";
+          break;
+        case "description":
+          error = "Description is required";
+          break;
+        default:
+          error = "Invalid";
+          break;
+      }
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      [field]: error
+    }));
   };
 
   return (
@@ -56,6 +99,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
             title: event.target.value
           })
         }
+        onBlur={(e) => handleBlur("title", e.target.value)}
+        error={Boolean(errors.title)}
+        helperText={errors.title}
         required
         fullWidth
       />
@@ -70,6 +116,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
             author: event.target.value
           })
         }
+        onBlur={(e) => handleBlur("author", e.target.value)}
+        error={Boolean(errors.author)}
+        helperText={errors.author}
         required
         fullWidth
       />
@@ -95,6 +144,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
               price: parseFloat(event.target.value)
             })
           }
+          onBlur={(e) => handleBlur("price", Number(e.target.value))}
+          error={Boolean(errors.price)}
+          helperText={errors.price}
           required
           fullWidth
           slotProps={{ htmlInput: { step: "0.01", min: 0 } }}
@@ -110,6 +162,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
               currency: event.target.value
             })
           }
+          onBlur={(e) => handleBlur("currency", e.target.value)}
+          error={Boolean(errors.currency)}
+          helperText={errors.currency}
           required
           fullWidth
         />
@@ -125,6 +180,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
             isbn: event.target.value
           })
         }
+        onBlur={(e) => handleBlur("isbn", e.target.value)}
+        error={Boolean(errors.isbn)}
+        helperText={errors.isbn}
         required
         fullWidth
       />
@@ -139,6 +197,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
             coverImage: event.target.value
           })
         }
+        onBlur={(e) => handleBlur("coverImage", e.target.value)}
+        error={Boolean(errors.coverImage)}
+        helperText={errors.coverImage}
         required
         fullWidth
       />
@@ -153,6 +214,9 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
             description: event.target.value
           })
         }
+        onBlur={(e) => handleBlur("description", e.target.value)}
+        error={Boolean(errors.description)}
+        helperText={errors.description}
         required
         multiline
         rows={3}
@@ -181,6 +245,7 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
           variant="contained"
           color={book ? "primary" : "success"}
           sx={{ textTransform: "none" }}
+          disabled={Object.values(errors).some(Boolean)}
         >
           {book ? "Update Book" : "Add Book"}
         </Button>
