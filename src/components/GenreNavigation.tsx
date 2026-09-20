@@ -15,12 +15,16 @@ export default function GenreNavigation({
   selectedGenre,
   onGenreChange
 }: GenreNavigationProps) {
-  const primaryGenres = ["All", "Science Fiction", "Fantasy"];
-  const genres = [...new Set(books.flatMap((book) => book.genres))].sort();
+  const primaryGenres: string[] = ["All", "Science Fiction", "Fantasy"];
+  const genres: string[] = [
+    ...new Set(books.flatMap((book) => book.genres))
+  ].sort();
 
-  const moreGenres = genres.filter((genre) => !primaryGenres.includes(genre));
-  const isMoreGenreSelected = moreGenres.includes(selectedGenre);
-  const [moreGenresOpen, setMoreGenresOpen] = useState(false);
+  const moreGenres: string[] = genres.filter(
+    (genre) => !primaryGenres.includes(genre)
+  );
+  const isMoreGenreSelected: boolean = moreGenres.includes(selectedGenre);
+  const [moreGenresOpen, setMoreGenresOpen] = useState<boolean>(false);
 
   useEffect(() => {
     if (isMoreGenreSelected) {
@@ -28,7 +32,7 @@ export default function GenreNavigation({
     }
   }, [isMoreGenreSelected]);
 
-  const getGenreCount = (genre: string) =>
+  const getGenreCount = (genre: string): number =>
     genre === "All"
       ? books.length
       : books.filter((book) => book.genres.includes(genre)).length;

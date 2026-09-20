@@ -6,7 +6,11 @@ import {
   Button,
   Collapse,
   Drawer,
+  FormControl,
   IconButton,
+  InputLabel,
+  MenuItem,
+  Select,
   Typography
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -24,9 +28,11 @@ export default function Page() {
   const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isGenreDrawerOpen, setIsGenreDrawerOpen] = useState(false);
-  const [isMobileGenreOpen, setIsMobileGenreOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isGenreDrawerOpen, setIsGenreDrawerOpen] = useState<boolean>(false);
+  const [isMobileGenreOpen, setIsMobileGenreOpen] = useState<boolean>(false);
+
+  const [sortBy, setSortBy] = useState<string>("");
 
   const handleAddBook = (newBook: Partial<Book>) => {
     const book: Book = {
@@ -58,14 +64,33 @@ export default function Page() {
     setIsModalOpen(true);
   };
 
-  const filteredBooks = () => {
-    const genreExists = books.some((book) =>
+  const filteredBooks = (): Book[] => {
+    const genreExists: boolean = books.some((book) =>
       book.genres.includes(selectedGenre)
     );
 
-    return genreExists
+    const genreFiltered: Book[] = genreExists
       ? books.filter((book) => book.genres.includes(selectedGenre))
       : books;
+
+    return [...genreFiltered].sort((a, b) => {
+      switch (sortBy) {
+        case "title-asc":
+          return a.title.localeCompare(b.title);
+
+        case "title-desc":
+          return b.title.localeCompare(a.title);
+
+        case "price-asc":
+          return a.price - b.price;
+
+        case "price-desc":
+          return b.price - a.price;
+
+        default:
+          return 0;
+      }
+    });
   };
 
   return (
@@ -96,7 +121,10 @@ export default function Page() {
             <GenreNavigation
               books={books}
               selectedGenre={selectedGenre}
-              onGenreChange={setSelectedGenre}
+              onGenreChange={(genre) => {
+                setSortBy("");
+                setSelectedGenre(genre);
+              }}
             />
           </Box>
         </Box>
@@ -106,7 +134,6 @@ export default function Page() {
             sx={{
               position: "sticky",
               top: 0,
-
               mx: -0.2,
               py: 2.5,
               backgroundColor: "background.default",
@@ -141,48 +168,92 @@ export default function Page() {
               </Box>
 
               <Box
-                sx={{ justifyContent: { xs: "flex-end", sm: "space-between" } }}
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 2
+                }}
               >
-                {/* Mobile */}
-                <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-                  <IconButton
+                <FormControl
+                  size="small"
+                  sx={{
+                    display: { xs: "none", sm: "inline-flex" },
+                    minWidth: 190
+                  }}
+                >
+                  <InputLabel id="sort-by-label">Sort by</InputLabel>
+
+                  <Select
+                    labelId="sort-by-label"
+                    label="Sort by"
+                    value={sortBy}
+                    size="small"
+                    onChange={(event) => setSortBy(event.target.value)}
+                    sx={{
+                      bgcolor: "background.paper",
+                      fontSize: "0.875rem",
+                      "& .MuiSelect-select": {
+                        py: 1
+                      }
+                    }}
+                  >
+                    <MenuItem value="title-asc">Title (A - Z)</MenuItem>
+                    <MenuItem value="title-desc">Title (Z - A)</MenuItem>
+                    <MenuItem value="price-asc">
+                      Price (Lowest - Highest)
+                    </MenuItem>
+                    <MenuItem value="price-desc">
+                      Price (Highest - Lowest)
+                    </MenuItem>
+                  </Select>
+                </FormControl>
+
+                <Box
+                  sx={{
+                    justifyContent: { xs: "flex-end", sm: "space-between" }
+                  }}
+                >
+                  {/* Mobile */}
+                  <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+                    <IconButton
+                      onClick={() => {
+                        setSelectedBook(undefined);
+                        setIsModalOpen(true);
+                      }}
+                      color="primary"
+                      sx={{
+                        mr: 1,
+                        bgcolor: (theme) =>
+                          alpha(theme.palette.primary.main, 0.2),
+                        border: "1px solid transparent",
+                        "&:hover": {
+                          bgcolor: (theme) =>
+                            alpha(theme.palette.primary.main, 0.2),
+                          border: (theme) =>
+                            `1px solid ${theme.palette.primary.main}`
+                        }
+                      }}
+                    >
+                      <Add />
+                    </IconButton>
+                  </Box>
+
+                  {/* Tablet/Desktop */}
+                  <Button
                     onClick={() => {
                       setSelectedBook(undefined);
                       setIsModalOpen(true);
                     }}
-                    color="primary"
+                    variant="contained"
+                    startIcon={<Add />}
                     sx={{
-                      mr: 1,
-                      bgcolor: (theme) =>
-                        alpha(theme.palette.primary.main, 0.2),
-                      border: "1px solid transparent",
-                      "&:hover": {
-                        bgcolor: (theme) =>
-                          alpha(theme.palette.primary.main, 0.2),
-                        border: (theme) =>
-                          `1px solid ${theme.palette.primary.main}`
-                      }
+                      display: { xs: "none", sm: "inline-flex" },
+                      textTransform: "none"
                     }}
                   >
-                    <Add />
-                  </IconButton>
+                    Add New Book
+                  </Button>
                 </Box>
-
-                {/* Tablet/Desktop */}
-                <Button
-                  onClick={() => {
-                    setSelectedBook(undefined);
-                    setIsModalOpen(true);
-                  }}
-                  variant="contained"
-                  startIcon={<Add />}
-                  sx={{
-                    display: { xs: "none", sm: "inline-flex" },
-                    textTransform: "none"
-                  }}
-                >
-                  Add New Book
-                </Button>
               </Box>
             </Box>
 
@@ -218,6 +289,7 @@ export default function Page() {
                     books={books}
                     selectedGenre={selectedGenre}
                     onGenreChange={(genre) => {
+                      setSortBy("");
                       setSelectedGenre(genre);
                       setIsMobileGenreOpen(false);
                     }}
@@ -227,12 +299,40 @@ export default function Page() {
             </Box>
           </Box>
 
+          {/* Mobile Sort By */}
+          <FormControl
+            size="small"
+            sx={{
+              display: { xs: "flex", sm: "none" },
+              mt: 1,
+              mb: 2
+            }}
+          >
+            <InputLabel id="mobile-sort-by-label">Sort by</InputLabel>
+
+            <Select
+              labelId="mobile-sort-by-label"
+              label="Sort by"
+              value={sortBy}
+              onChange={(event) => setSortBy(event.target.value)}
+              sx={{
+                bgcolor: "background.paper",
+                fontSize: "0.875rem"
+              }}
+            >
+              <MenuItem value="title-asc">Title (A - Z)</MenuItem>
+              <MenuItem value="title-desc">Title (Z - A)</MenuItem>
+              <MenuItem value="price-asc">Price (Lowest - Highest)</MenuItem>
+              <MenuItem value="price-desc">Price (Highest - Lowest)</MenuItem>
+            </Select>
+          </FormControl>
+
           <Box
             sx={{
               display: { xs: "flex", md: "none" },
               alignItems: "center",
               gap: 1,
-              mb: 2
+              mb: { xs: 1.5, sm: 2 }
             }}
           >
             <Typography
@@ -297,6 +397,7 @@ export default function Page() {
             books={books}
             selectedGenre={selectedGenre}
             onGenreChange={(genre) => {
+              setSortBy("");
               setSelectedGenre(genre);
               setIsGenreDrawerOpen(false);
             }}
