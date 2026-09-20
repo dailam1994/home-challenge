@@ -23,18 +23,40 @@ export default function Dialog({
   children
 }: DialogProps) {
   return (
-    <MuiDialog open={isOpen} onClose={onClose} fullWidth maxWidth="sm">
-      <DialogTitle
-        sx={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          fontWeight: 600
-        }}
-      >
+    <MuiDialog
+      open={isOpen}
+      onClose={onClose}
+      fullWidth
+      maxWidth="sm"
+      slotProps={{
+        paper: {
+          sx: {
+            overflow: "visible"
+          }
+        }
+      }}
+    >
+      <DialogTitle sx={{ fontWeight: 600 }}>
         {title}
 
-        <IconButton onClick={onClose} aria-label="Close dialog" size="small">
+        <IconButton
+          onClick={onClose}
+          aria-label="Close dialog"
+          size="small"
+          sx={{
+            position: "absolute",
+            top: 15,
+            right: -10,
+            width: 40,
+            height: 25,
+            zIndex: 1,
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
+            borderRadius: 1,
+            boxShadow: 2,
+            "&:hover": { bgcolor: "primary.dark" }
+          }}
+        >
           <Close />
         </IconButton>
       </DialogTitle>

@@ -1,5 +1,6 @@
 "use client";
 
+import { Box, Button, TextField } from "@mui/material";
 import type { FormEvent } from "react";
 import { useState } from "react";
 import type { Book } from "@/types/book";
@@ -35,152 +36,155 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <div>
-        <label
-          htmlFor="title"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Title
-        </label>
-        <input
-          type="text"
-          id="title"
-          value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2.5,
+        pt: 1
+      }}
+    >
+      <TextField
+        id="title"
+        label="Title"
+        value={formData.title}
+        onChange={(event) =>
+          setFormData({
+            ...formData,
+            title: event.target.value
+          })
+        }
+        required
+        fullWidth
+      />
 
-      <div>
-        <label
-          htmlFor="author"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Author
-        </label>
-        <input
-          type="text"
-          id="author"
-          value={formData.author}
-          onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
+      <TextField
+        id="author"
+        label="Author"
+        value={formData.author}
+        onChange={(event) =>
+          setFormData({
+            ...formData,
+            author: event.target.value
+          })
+        }
+        required
+        fullWidth
+      />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label
-            htmlFor="price"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Price
-          </label>
-          <input
-            type="number"
-            id="price"
-            value={formData.price}
-            onChange={(e) =>
-              setFormData({ ...formData, price: parseFloat(e.target.value) })
-            }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
-            step="0.01"
-          />
-        </div>
-
-        <div>
-          <label
-            htmlFor="currency"
-            className="block text-sm font-medium text-gray-700"
-          >
-            Currency
-          </label>
-          <input
-            type="text"
-            id="currency"
-            value={formData.currency}
-            onChange={(e) =>
-              setFormData({ ...formData, currency: e.target.value })
-            }
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div>
-        <label
-          htmlFor="isbn"
-          className="block text-sm font-medium text-gray-700"
-        >
-          ISBN
-        </label>
-        <input
-          type="text"
-          id="isbn"
-          value={formData.isbn}
-          onChange={(e) => setFormData({ ...formData, isbn: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          required
-        />
-      </div>
-
-      <div>
-        <label
-          htmlFor="coverImage"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Cover Image URL
-        </label>
-        <input
-          type="text"
-          id="coverImage"
-          value={formData.coverImage}
-          onChange={(e) =>
-            setFormData({ ...formData, coverImage: e.target.value })
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: {
+            xs: "1fr",
+            sm: "1fr 1fr"
+          },
+          gap: 2
+        }}
+      >
+        <TextField
+          id="price"
+          label="Price"
+          type="number"
+          value={formData.price}
+          onChange={(event) =>
+            setFormData({
+              ...formData,
+              price: parseFloat(event.target.value)
+            })
           }
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
           required
+          fullWidth
+          slotProps={{ htmlInput: { step: "0.01", min: 0 } }}
         />
-      </div>
 
-      <div>
-        <label
-          htmlFor="description"
-          className="block text-sm font-medium text-gray-700"
-        >
-          Description
-        </label>
-        <textarea
-          id="description"
-          value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
+        <TextField
+          id="currency"
+          label="Currency"
+          value={formData.currency}
+          onChange={(event) =>
+            setFormData({
+              ...formData,
+              currency: event.target.value
+            })
           }
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-          rows={3}
           required
+          fullWidth
         />
-      </div>
+      </Box>
 
-      <div className="flex justify-end gap-4">
-        <button
+      <TextField
+        id="isbn"
+        label="ISBN"
+        value={formData.isbn}
+        onChange={(event) =>
+          setFormData({
+            ...formData,
+            isbn: event.target.value
+          })
+        }
+        required
+        fullWidth
+      />
+
+      <TextField
+        id="coverImage"
+        label="Cover Image URL"
+        value={formData.coverImage}
+        onChange={(event) =>
+          setFormData({
+            ...formData,
+            coverImage: event.target.value
+          })
+        }
+        required
+        fullWidth
+      />
+
+      <TextField
+        id="description"
+        label="Description"
+        value={formData.description}
+        onChange={(event) =>
+          setFormData({
+            ...formData,
+            description: event.target.value
+          })
+        }
+        required
+        multiline
+        rows={3}
+        fullWidth
+      />
+
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          gap: 1.5,
+          pt: 1
+        }}
+      >
+        <Button
           type="button"
+          variant="outlined"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+          sx={{ textTransform: "none" }}
         >
           Cancel
-        </button>
-        <button
+        </Button>
+
+        <Button
           type="submit"
-          className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-md hover:bg-blue-700"
+          variant="contained"
+          color={book ? "primary" : "success"}
+          sx={{ textTransform: "none" }}
         >
           {book ? "Update Book" : "Add Book"}
-        </button>
-      </div>
-    </form>
+        </Button>
+      </Box>
+    </Box>
   );
 }
