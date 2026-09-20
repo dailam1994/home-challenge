@@ -1,6 +1,6 @@
 "use client";
 
-import { Add, Menu } from "@mui/icons-material";
+import { Add, Menu, Search } from "@mui/icons-material";
 import {
   Box,
   Button,
@@ -8,9 +8,11 @@ import {
   Drawer,
   FormControl,
   IconButton,
+  InputAdornment,
   InputLabel,
   MenuItem,
   Select,
+  TextField,
   Typography
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -32,6 +34,7 @@ export default function Page() {
   const [isGenreDrawerOpen, setIsGenreDrawerOpen] = useState<boolean>(false);
   const [isMobileGenreOpen, setIsMobileGenreOpen] = useState<boolean>(false);
 
+  const [search, setSearch] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
 
   const handleAddBook = (newBook: Partial<Book>) => {
@@ -73,7 +76,11 @@ export default function Page() {
       ? books.filter((book) => book.genres.includes(selectedGenre))
       : books;
 
-    return [...genreFiltered].sort((a, b) => {
+    const searchFiltered: Book[] = genreFiltered.filter((book) =>
+      book.title.toLowerCase().includes(search.trim().toLowerCase())
+    );
+
+    return [...searchFiltered].sort((a, b) => {
       switch (sortBy) {
         case "title-asc":
           return a.title.localeCompare(b.title);
@@ -122,6 +129,7 @@ export default function Page() {
               books={books}
               selectedGenre={selectedGenre}
               onGenreChange={(genre) => {
+                setSearch("");
                 setSortBy("");
                 setSelectedGenre(genre);
               }}
@@ -142,7 +150,7 @@ export default function Page() {
           >
             <Box sx={{ display: "flex", justifyContent: "space-between" }}>
               <Box sx={{ display: "flex" }}>
-                {/* Mobile */}
+                {/* Mobile Menu */}
                 <IconButton
                   onClick={() => setIsMobileGenreOpen((open) => !open)}
                   aria-label="Toggle mobile genre navigation"
@@ -151,7 +159,7 @@ export default function Page() {
                   <Menu />
                 </IconButton>
 
-                {/* Tablet */}
+                {/* Tablet Menu */}
                 <IconButton
                   onClick={() => setIsGenreDrawerOpen(true)}
                   aria-label="Open tablet genre navigation"
@@ -174,10 +182,34 @@ export default function Page() {
                   gap: 2
                 }}
               >
+                {/* Desktop Search */}
+                <TextField
+                  value={search}
+                  onChange={(event) => setSearch(event.target.value)}
+                  placeholder="Search title..."
+                  size="small"
+                  sx={{
+                    display: { xs: "none", md: "block" },
+                    width: 220,
+                    bgcolor: "background.paper",
+                    "& .MuiInputBase-root": { height: 40 }
+                  }}
+                  slotProps={{
+                    input: {
+                      startAdornment: (
+                        <InputAdornment position="start">
+                          <Search fontSize="small" />
+                        </InputAdornment>
+                      )
+                    }
+                  }}
+                />
+
+                {/* Desktop Sort By */}
                 <FormControl
                   size="small"
                   sx={{
-                    display: { xs: "none", sm: "inline-flex" },
+                    display: { xs: "none", md: "inline-flex" },
                     minWidth: 190
                   }}
                 >
@@ -190,11 +222,10 @@ export default function Page() {
                     size="small"
                     onChange={(event) => setSortBy(event.target.value)}
                     sx={{
+                      height: 40,
+                      width: 200,
                       bgcolor: "background.paper",
-                      fontSize: "0.875rem",
-                      "& .MuiSelect-select": {
-                        py: 1
-                      }
+                      fontSize: "0.875rem"
                     }}
                   >
                     <MenuItem value="title-asc">Title (A - Z)</MenuItem>
@@ -208,56 +239,53 @@ export default function Page() {
                   </Select>
                 </FormControl>
 
-                <Box
-                  sx={{
-                    justifyContent: { xs: "flex-end", sm: "space-between" }
-                  }}
-                >
-                  {/* Mobile */}
-                  <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-                    <IconButton
-                      onClick={() => {
-                        setSelectedBook(undefined);
-                        setIsModalOpen(true);
-                      }}
-                      color="primary"
-                      sx={{
-                        mr: 1,
-                        bgcolor: (theme) =>
-                          alpha(theme.palette.primary.main, 0.2),
-                        border: "1px solid transparent",
-                        "&:hover": {
-                          bgcolor: (theme) =>
-                            alpha(theme.palette.primary.main, 0.2),
-                          border: (theme) =>
-                            `1px solid ${theme.palette.primary.main}`
-                        }
-                      }}
-                    >
-                      <Add />
-                    </IconButton>
-                  </Box>
-
-                  {/* Tablet/Desktop */}
-                  <Button
+                {/* Mobile Add Book */}
+                <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+                  <IconButton
                     onClick={() => {
                       setSelectedBook(undefined);
                       setIsModalOpen(true);
                     }}
-                    variant="contained"
-                    startIcon={<Add />}
+                    color="primary"
                     sx={{
-                      display: { xs: "none", sm: "inline-flex" },
-                      textTransform: "none"
+                      display: { xs: "inline-flex", sm: "none" },
+                      mr: 1,
+                      bgcolor: (theme) =>
+                        alpha(theme.palette.primary.main, 0.2),
+                      border: "1px solid transparent",
+                      "&:hover": {
+                        bgcolor: (theme) =>
+                          alpha(theme.palette.primary.main, 0.2),
+                        border: (theme) =>
+                          `1px solid ${theme.palette.primary.main}`
+                      }
                     }}
                   >
-                    Add New Book
-                  </Button>
+                    <Add />
+                  </IconButton>
                 </Box>
+
+                {/* Tablet / Desktop Add Book */}
+                <Button
+                  onClick={() => {
+                    setSelectedBook(undefined);
+                    setIsModalOpen(true);
+                  }}
+                  variant="contained"
+                  startIcon={<Add />}
+                  sx={{
+                    display: { xs: "none", sm: "inline-flex" },
+                    height: 40,
+                    whiteSpace: "nowrap",
+                    textTransform: "none"
+                  }}
+                >
+                  Add New Book
+                </Button>
               </Box>
             </Box>
 
-            {/* Mobile */}
+            {/* Mobile Genre Navigation */}
             <Box
               sx={{
                 position: "relative",
@@ -289,6 +317,7 @@ export default function Page() {
                     books={books}
                     selectedGenre={selectedGenre}
                     onGenreChange={(genre) => {
+                      setSearch("");
                       setSortBy("");
                       setSelectedGenre(genre);
                       setIsMobileGenreOpen(false);
@@ -299,34 +328,70 @@ export default function Page() {
             </Box>
           </Box>
 
-          {/* Mobile Sort By */}
-          <FormControl
-            size="small"
+          <Box
             sx={{
-              display: { xs: "flex", sm: "none" },
+              display: { xs: "flex", md: "none" },
+              flexDirection: { xs: "column", sm: "row" },
+              gap: 2,
               mt: 1,
               mb: 2
             }}
           >
-            <InputLabel id="mobile-sort-by-label">Sort by</InputLabel>
-
-            <Select
-              labelId="mobile-sort-by-label"
-              label="Sort by"
-              value={sortBy}
-              onChange={(event) => setSortBy(event.target.value)}
+            {/* Mobile / Tablet Search */}
+            <TextField
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search title..."
+              size="small"
+              fullWidth
               sx={{
                 bgcolor: "background.paper",
-                fontSize: "0.875rem"
+                "& .MuiInputBase-root": {
+                  height: 40
+                }
+              }}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search fontSize="small" />
+                    </InputAdornment>
+                  )
+                }
+              }}
+            />
+
+            {/* Mobile / Tablet Sort by */}
+            <FormControl
+              size="small"
+              sx={{
+                width: { xs: "100%", sm: 220 },
+                flexShrink: 0
               }}
             >
-              <MenuItem value="title-asc">Title (A - Z)</MenuItem>
-              <MenuItem value="title-desc">Title (Z - A)</MenuItem>
-              <MenuItem value="price-asc">Price (Lowest - Highest)</MenuItem>
-              <MenuItem value="price-desc">Price (Highest - Lowest)</MenuItem>
-            </Select>
-          </FormControl>
+              <InputLabel id="responsive-sort-by-label">Sort by</InputLabel>
 
+              <Select
+                labelId="responsive-sort-by-label"
+                label="Sort by"
+                value={sortBy}
+                size="small"
+                onChange={(event) => setSortBy(event.target.value)}
+                sx={{
+                  height: 40,
+                  bgcolor: "background.paper",
+                  fontSize: "0.875rem"
+                }}
+              >
+                <MenuItem value="title-asc">Title (A - Z)</MenuItem>
+                <MenuItem value="title-desc">Title (Z - A)</MenuItem>
+                <MenuItem value="price-asc">Price (Lowest - Highest)</MenuItem>
+                <MenuItem value="price-desc">Price (Highest - Lowest)</MenuItem>
+              </Select>
+            </FormControl>
+          </Box>
+
+          {/* Genre selection display */}
           <Box
             sx={{
               display: { xs: "flex", md: "none" },
@@ -357,6 +422,7 @@ export default function Page() {
             </Typography>
           </Box>
 
+          {/* Book list display */}
           <Box
             sx={{
               display: "grid",
@@ -381,7 +447,7 @@ export default function Page() {
         </Box>
       </Box>
 
-      {/* Tablet */}
+      {/* Tablet Drawer */}
       <Drawer
         anchor="left"
         open={isGenreDrawerOpen}
@@ -397,6 +463,7 @@ export default function Page() {
             books={books}
             selectedGenre={selectedGenre}
             onGenreChange={(genre) => {
+              setSearch("");
               setSortBy("");
               setSelectedGenre(genre);
               setIsGenreDrawerOpen(false);
