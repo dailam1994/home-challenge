@@ -19,8 +19,8 @@ import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 import BookCard from "@/components/BookCard";
 import BookForm from "@/components/BookForm";
+import Dialog from "@/components/Dialog";
 import GenreNavigation from "@/components/GenreNavigation";
-import Modal from "@/components/Modal";
 import type { Book } from "@/types/book";
 import data from "../../public/data.json";
 
@@ -472,7 +472,7 @@ export default function Page() {
         </Box>
       </Drawer>
 
-      <Modal
+      <Dialog
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -488,7 +488,7 @@ export default function Page() {
             setSelectedBook(undefined);
           }}
         />
-      </Modal>
+      </Dialog>
     </main>
   );
 }
