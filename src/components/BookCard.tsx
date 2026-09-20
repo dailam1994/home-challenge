@@ -1,3 +1,14 @@
+import { DeleteForever, Edit } from "@mui/icons-material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  IconButton,
+  Typography
+} from "@mui/material";
+import { alpha } from "@mui/material/styles";
 import Image from "next/image";
 import type { Book } from "@/types/book";
 
@@ -9,8 +20,22 @@ interface BookCardProps {
 
 export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
   return (
-    <div className="relative bg-white rounded-lg shadow-md overflow-hidden">
-      <div className="relative h-[300px] w-full">
+    <Card
+      variant="outlined"
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        height: "100%",
+        boxShadow: 5
+      }}
+    >
+      <Box
+        sx={{
+          position: "relative",
+          height: 300,
+          width: "100%"
+        }}
+      >
         <Image
           src={book.coverImage}
           alt={`Cover of ${book.title}`}
@@ -19,33 +44,95 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
           sizes="(max-width: 768px) 100vw, 50vw"
           priority={book.id === 1}
         />
-      </div>
-      <div className="p-4">
-        <h3 className="text-lg font-semibold">{book.title}</h3>
-        <p className="text-gray-600">{book.author}</p>
-        <p className="text-green-600 font-semibold mb-2">
+      </Box>
+
+      <CardContent sx={{ flexGrow: 1 }}>
+        <Typography variant="h6">{book.title}</Typography>
+        <Typography>{book.author}</Typography>
+
+        <Typography
+          sx={{
+            mb: 1,
+            fontWeight: 600,
+            color: "green"
+          }}
+        >
           {book.currency} {book.price.toFixed(2)}
-        </p>
-        <p className="text-gray-700 text-sm line-clamp-3 mb-4">
-          {book.description}
-        </p>
-        <div className="mt-4 flex gap-2">
-          <button
-            type="button"
+        </Typography>
+
+        <Typography variant="body2">{book.description}</Typography>
+      </CardContent>
+
+      <CardActions
+        sx={{
+          justifyContent: {
+            xs: "flex-end",
+            sm: "space-between"
+          }
+        }}
+      >
+        {/* Mobile */}
+        <Box sx={{ display: { xs: "flex", sm: "none" } }}>
+          <IconButton
             onClick={() => onEdit(book)}
-            className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            color="primary"
+            aria-label={`Edit ${book.title}`}
+            sx={{
+              bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+              border: "1px solid transparent",
+              "&:hover": {
+                bgcolor: (theme) => alpha(theme.palette.primary.main, 0.2),
+                border: (theme) => `1px solid ${theme.palette.primary.main}`
+              }
+            }}
           >
-            Edit
-          </button>
-          <button
-            type="button"
+            <Edit />
+          </IconButton>
+
+          <IconButton
             onClick={() => onDelete(book.id)}
-            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            color="error"
+            aria-label={`Delete ${book.title}`}
+            sx={{
+              ml: 1,
+              bgcolor: (theme) => alpha(theme.palette.error.main, 0.2),
+              border: "1px solid transparent",
+              "&:hover": {
+                bgcolor: (theme) => alpha(theme.palette.error.main, 0.2),
+                border: (theme) => `1px solid ${theme.palette.error.main}`
+              }
+            }}
           >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+
+        {/* Tablet/Desktop */}
+        <Button
+          onClick={() => onEdit(book)}
+          variant="outlined"
+          startIcon={<Edit />}
+          sx={{
+            display: { xs: "none", sm: "inline-flex" },
+            textTransform: "none"
+          }}
+        >
+          Edit
+        </Button>
+
+        <Button
+          onClick={() => onDelete(book.id)}
+          variant="contained"
+          color="error"
+          startIcon={<DeleteForever />}
+          sx={{
+            display: { xs: "none", sm: "inline-flex" },
+            textTransform: "none"
+          }}
+        >
+          Delete
+        </Button>
+      </CardActions>
+    </Card>
   );
 }
