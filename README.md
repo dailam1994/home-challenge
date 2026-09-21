@@ -19,7 +19,7 @@ improvements, and new features in the future.
 
 2. Implement dark mode that includes a switcher to go back to light mode. DONE
 
-3. Deleting a book displays a JavaScript alert. Replace this with modern UX.
+3. Deleting a book displays a JavaScript alert. Replace this with modern UX. DONE
 
 4. Add a rating system that goes up to 5 stars.
 

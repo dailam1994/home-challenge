@@ -6,6 +6,9 @@ import {
   Box,
   Button,
   Collapse,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Drawer,
   FormControl,
   FormControlLabel,
@@ -13,6 +16,7 @@ import {
   InputAdornment,
   InputLabel,
   MenuItem,
+  Dialog as MuiDialog,
   Select,
   Snackbar,
   TextField,
@@ -43,7 +47,8 @@ export default function Page() {
   const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isDialogOpen, setIsDialogOpen] = useState<boolean>(false);
+  const [bookToDelete, setBookToDelete] = useState<Book | undefined>(undefined);
   const [isGenreDrawerOpen, setIsGenreDrawerOpen] = useState<boolean>(false);
   const [isMobileGenreOpen, setIsMobileGenreOpen] = useState<boolean>(false);
 
@@ -93,21 +98,34 @@ export default function Page() {
     }
   };
 
-  const handleDeleteBook = (id: number) => {
-    if (confirm("Are you sure you want to delete this book?")) {
-      setBooks(books.filter((book) => book.id !== id));
+  const handleDeleteBook = (): void => {
+    if (!bookToDelete) return;
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      setBooks(books.filter((book) => book.id !== bookToDelete.id));
+      setSuccessMessage("OK: Book deleted successfully.");
+      setBookToDelete(undefined);
+    } catch (e) {
+      setErrorMessage("Bad Request: Failed to delete book.");
+      console.error("Failed to delete book:", e);
     }
   };
 
   const handleEdit = (book: Book) => {
     setSelectedBook(book);
-    setIsModalOpen(true);
+    setIsDialogOpen(true);
   };
 
   const filteredBooks = (): Book[] => {
     const genreFiltered: Book[] = filterBooksByGenre(books, selectedGenre);
     const searchFiltered: Book[] = searchBooksByTitle(genreFiltered, search);
     return sortBooks(searchFiltered, sortBy);
+  };
+
+  const handleBookToDeleteDialogOpen = (id: number) => {
+    setBookToDelete(books.find((book) => book.id === id));
   };
 
   return (
@@ -276,7 +294,7 @@ export default function Page() {
                   <IconButton
                     onClick={() => {
                       setSelectedBook(undefined);
-                      setIsModalOpen(true);
+                      setIsDialogOpen(true);
                     }}
                     color="primary"
                     sx={{
@@ -301,7 +319,7 @@ export default function Page() {
                 <Button
                   onClick={() => {
                     setSelectedBook(undefined);
-                    setIsModalOpen(true);
+                    setIsDialogOpen(true);
                   }}
                   variant="contained"
                   startIcon={<Add />}
@@ -472,7 +490,7 @@ export default function Page() {
                 key={book.id}
                 book={book}
                 onEdit={handleEdit}
-                onDelete={handleDeleteBook}
+                onDelete={handleBookToDeleteDialogOpen}
               />
             ))}
           </Box>
@@ -505,9 +523,9 @@ export default function Page() {
       </Drawer>
 
       <Dialog
-        isOpen={isModalOpen}
+        isOpen={isDialogOpen}
         onClose={() => {
-          setIsModalOpen(false);
+          setIsDialogOpen(false);
           setIsSubmitted(false);
           setSelectedBook(undefined);
         }}
@@ -517,7 +535,7 @@ export default function Page() {
           book={selectedBook}
           onSubmit={selectedBook ? handleUpdateBook : handleAddBook}
           onCancel={() => {
-            setIsModalOpen(false);
+            setIsDialogOpen(false);
             setSelectedBook(undefined);
           }}
           isSubmitted={isSubmitted}
@@ -569,6 +587,90 @@ export default function Page() {
           {errorMessage}
         </Alert>
       )}
+
+      {/* Delete Book Confirmation */}
+      <MuiDialog
+        open={!!bookToDelete}
+        onClose={() => setBookToDelete(undefined)}
+        fullWidth
+        maxWidth="sm"
+        slotProps={{
+          paper: {
+            sx: {
+              overflow: "visible"
+            }
+          }
+        }}
+      >
+        <DialogTitle>Delete Book</DialogTitle>
+
+        <DialogContent>
+          <Typography>
+            Are you sure you want to permanently delete the book details below?
+          </Typography>
+          <br />
+          <hr />
+
+          {bookToDelete && (
+            <Box sx={{ mt: 2 }}>
+              <Typography>
+                <strong>Title:</strong> {bookToDelete.title}
+              </Typography>
+
+              <Typography>
+                <strong>Author:</strong> {bookToDelete.author}
+              </Typography>
+
+              <Typography>
+                <strong>Price:</strong> ${bookToDelete.price}
+              </Typography>
+            </Box>
+          )}
+          <br />
+
+          <Alert sx={{ py: 0 }} variant="outlined" severity="warning">
+            <strong>This action cannot be undone.</strong>
+          </Alert>
+        </DialogContent>
+
+        <DialogActions
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            mt: 2,
+            px: 4,
+            py: 2,
+            bgcolor: "action.hover",
+            borderTop: 1,
+            borderColor: "divider"
+          }}
+        >
+          <Button
+            onClick={() => setBookToDelete(undefined)}
+            variant="outlined"
+            sx={{
+              width: 80,
+              height: 33,
+              textTransform: "none"
+            }}
+          >
+            Cancel
+          </Button>
+
+          <Button
+            onClick={handleDeleteBook}
+            variant="contained"
+            color="error"
+            sx={{
+              width: 80,
+              height: 33,
+              textTransform: "none"
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </MuiDialog>
     </main>
   );
 }
