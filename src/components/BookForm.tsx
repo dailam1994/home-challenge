@@ -1,5 +1,6 @@
 "use client";
 
+import { Done } from "@mui/icons-material";
 import { Box, Button, TextField } from "@mui/material";
 import type { FormEvent } from "react";
 import { useState } from "react";
@@ -9,9 +10,15 @@ interface BookFormProps {
   book?: Book;
   onSubmit: (book: Partial<Book>) => void;
   onCancel: () => void;
+  isSubmitted: boolean;
 }
 
-export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
+export default function BookForm({
+  book,
+  onSubmit,
+  onCancel,
+  isSubmitted
+}: BookFormProps) {
   const [formData, setFormData] = useState<Partial<Book>>(
     book ?? {
       title: "",
@@ -244,10 +251,29 @@ export default function BookForm({ book, onSubmit, onCancel }: BookFormProps) {
           type="submit"
           variant="contained"
           color={book ? "primary" : "success"}
-          sx={{ textTransform: "none" }}
-          disabled={Object.values(errors).some(Boolean)}
+          sx={{
+            position: "relative",
+            textTransform: "none"
+          }}
+          disabled={Object.values(errors).some(Boolean) || isSubmitted}
         >
-          {book ? "Update Book" : "Add Book"}
+          {isSubmitted
+            ? book
+              ? "Updated"
+              : "Added"
+            : book
+              ? "Update Book"
+              : "Add Book"}
+
+          {isSubmitted && (
+            <Done
+              color="success"
+              sx={{
+                position: "absolute",
+                left: -40
+              }}
+            />
+          )}
         </Button>
       </Box>
     </Box>

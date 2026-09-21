@@ -28,3 +28,17 @@ improvements, and new features in the future.
 [Explain here what the bug was and how you fixed it]
 
 Good luck and have fun!
+
+## Development Commands
+
+```bash
+pnpm dev          # Run checks and start the development server
+pnpm build        # Run tests and create a production build
+pnpm start        # Start the production server
+
+pnpm check        # Run Biome checks
+pnpm check:fix    # Run Biome checks and automatically fix issues
+
+pnpm test         # Run Vitest tests
+pnpm test:run     # Run Vitest tests once
+```

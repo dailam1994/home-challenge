@@ -2,6 +2,7 @@
 
 import { Add, Menu, Search } from "@mui/icons-material";
 import {
+  Alert,
   Box,
   Button,
   Collapse,
@@ -12,9 +13,11 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
   Typography
 } from "@mui/material";
+import Fade from "@mui/material/Fade";
 import { alpha } from "@mui/material/styles";
 import { useState } from "react";
 import BookCard from "@/components/BookCard";
@@ -22,6 +25,11 @@ import BookForm from "@/components/BookForm";
 import Dialog from "@/components/Dialog";
 import GenreNavigation from "@/components/GenreNavigation";
 import type { Book } from "@/types/book";
+import {
+  filterBooksByGenre,
+  searchBooksByTitle,
+  sortBooks
+} from "@/utils/bookUtils";
 import data from "../../public/data.json";
 
 export default function Page() {
@@ -37,23 +45,47 @@ export default function Page() {
   const [search, setSearch] = useState<string>("");
   const [sortBy, setSortBy] = useState<string>("");
 
+  const [isSubmitted, setIsSubmitted] = useState<boolean>(false);
+  const [successMessage, setSuccessMessage] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+
   const handleAddBook = (newBook: Partial<Book>) => {
-    const book: Book = {
-      ...(newBook as Book),
-      id: Math.max(...books.map((b) => b.id)) + 1
-    };
-    setBooks([...books, book]);
-    setIsModalOpen(false);
+    setIsSubmitted(false);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      const book: Book = {
+        ...(newBook as Book),
+        id: Math.max(...books.map((b) => b.id)) + 1
+      };
+      setBooks([...books, book]);
+      setSuccessMessage("OK: Book added successfully.");
+      setIsSubmitted(true);
+    } catch (e) {
+      setErrorMessage("Bad Request: Failed to add book.");
+      console.error("Failed to add book:", e);
+    }
   };
 
   const handleUpdateBook = (updatedBook: Partial<Book>) => {
-    setBooks(
-      books.map((book) =>
-        book.id === selectedBook?.id ? { ...updatedBook, ...book } : book
-      )
-    );
-    setIsModalOpen(false);
-    setSelectedBook(undefined);
+    setIsSubmitted(false);
+    setSuccessMessage("");
+    setErrorMessage("");
+
+    try {
+      setBooks(
+        books.map((book) =>
+          book.id === selectedBook?.id ? { ...updatedBook, ...book } : book
+        )
+      );
+      setSuccessMessage("OK: Book updated successfully.");
+      setIsSubmitted(true);
+      setSelectedBook(undefined);
+    } catch (e) {
+      setErrorMessage("Bad Request: Failed to update book.");
+      console.error("Failed to update book:", e);
+    }
   };
 
   const handleDeleteBook = (id: number) => {
@@ -68,36 +100,9 @@ export default function Page() {
   };
 
   const filteredBooks = (): Book[] => {
-    const genreExists: boolean = books.some((book) =>
-      book.genres.includes(selectedGenre)
-    );
-
-    const genreFiltered: Book[] = genreExists
-      ? books.filter((book) => book.genres.includes(selectedGenre))
-      : books;
-
-    const searchFiltered: Book[] = genreFiltered.filter((book) =>
-      book.title.toLowerCase().includes(search.trim().toLowerCase())
-    );
-
-    return [...searchFiltered].sort((a, b) => {
-      switch (sortBy) {
-        case "title-asc":
-          return a.title.localeCompare(b.title);
-
-        case "title-desc":
-          return b.title.localeCompare(a.title);
-
-        case "price-asc":
-          return a.price - b.price;
-
-        case "price-desc":
-          return b.price - a.price;
-
-        default:
-          return 0;
-      }
-    });
+    const genreFiltered: Book[] = filterBooksByGenre(books, selectedGenre);
+    const searchFiltered: Book[] = searchBooksByTitle(genreFiltered, search);
+    return sortBooks(searchFiltered, sortBy);
   };
 
   return (
@@ -476,6 +481,7 @@ export default function Page() {
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
+          setIsSubmitted(false);
           setSelectedBook(undefined);
         }}
         title={selectedBook ? "Edit Book" : "Add New Book"}
@@ -487,8 +493,55 @@ export default function Page() {
             setIsModalOpen(false);
             setSelectedBook(undefined);
           }}
+          isSubmitted={isSubmitted}
         />
       </Dialog>
+
+      <Snackbar
+        open={!!successMessage}
+        onClose={() => setSuccessMessage("")}
+        autoHideDuration={5000}
+        slots={{ transition: Fade }}
+        slotProps={{
+          transition: {
+            timeout: { enter: 0, exit: 555 }
+          }
+        }}
+      >
+        <Alert
+          onClose={() => setSuccessMessage("")}
+          severity="success"
+          variant="filled"
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            borderRadius: 0,
+            zIndex: 1400
+          }}
+        >
+          {successMessage}
+        </Alert>
+      </Snackbar>
+
+      {errorMessage && (
+        <Alert
+          onClose={() => setErrorMessage("")}
+          severity="error"
+          variant="filled"
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            borderRadius: 0,
+            zIndex: 1400
+          }}
+        >
+          {errorMessage}
+        </Alert>
+      )}
     </main>
   );
 }
