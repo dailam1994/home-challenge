@@ -8,6 +8,7 @@ import {
   Collapse,
   Drawer,
   FormControl,
+  FormControlLabel,
   IconButton,
   InputAdornment,
   InputLabel,
@@ -19,11 +20,13 @@ import {
 } from "@mui/material";
 import Fade from "@mui/material/Fade";
 import { alpha } from "@mui/material/styles";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import { AppThemeContext } from "@/components/AppThemeProvider";
 import BookCard from "@/components/BookCard";
 import BookForm from "@/components/BookForm";
 import Dialog from "@/components/Dialog";
 import GenreNavigation from "@/components/GenreNavigation";
+import MaterialUISwitch from "@/components/MaterialUISwitch";
 import type { Book } from "@/types/book";
 import {
   filterBooksByGenre,
@@ -33,6 +36,8 @@ import {
 import data from "../../public/data.json";
 
 export default function Page() {
+  const { darkMode, handleDarkMode } = useContext(AppThemeContext);
+
   const [books, setBooks] = useState<Book[]>(data as Book[]);
 
   const [selectedBook, setSelectedBook] = useState<Book | undefined>(undefined);
@@ -120,6 +125,7 @@ export default function Page() {
             display: { xs: "none", md: "block" },
             pt: 10,
             pr: 2,
+            bgcolor: "background.default",
             borderRight: 1,
             borderColor: "divider"
           }}
@@ -243,6 +249,27 @@ export default function Page() {
                     </MenuItem>
                   </Select>
                 </FormControl>
+
+                {/* Dark/Light Mode */}
+                <FormControlLabel
+                  label="Mode"
+                  control={
+                    <MaterialUISwitch
+                      checked={darkMode}
+                      onChange={handleDarkMode}
+                      slotProps={{
+                        input: { "aria-label": "Toggle dark/light mode" }
+                      }}
+                    />
+                  }
+                  sx={{
+                    mr: { xs: -2, sm: -1 },
+                    "& .MuiFormControlLabel-label": {
+                      display: { xs: "none", sm: "block" },
+                      fontWeight: 600
+                    }
+                  }}
+                />
 
                 {/* Mobile Add Book */}
                 <Box sx={{ display: { xs: "flex", sm: "none" } }}>

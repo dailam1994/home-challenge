@@ -8,7 +8,7 @@ Push this up to a public Github repository please. We will assess both code and 
 
 Please implement the following:
 
-1. Use a component library to make the UI and UX more appealing and user friendly.
+1. Use a component library to make the UI and UX more appealing and user friendly. DONE
 
 [Explain here why you chose the one you did]
 I decided to use Material UI "MUI" because it's a commonly used React component library
@@ -17,7 +17,7 @@ simple and convenient to use while still being easy to customise. MUI also has a
 contributor base, which provides confidence that the library will continue to recieve bug fixes,
 improvements, and new features in the future.
 
-2. Implement dark mode that includes a switcher to go back to light mode.
+2. Implement dark mode that includes a switcher to go back to light mode. DONE
 
 3. Deleting a book displays a JavaScript alert. Replace this with modern UX.
 

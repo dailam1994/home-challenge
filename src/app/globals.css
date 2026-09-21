@@ -15,27 +15,3 @@
   width: 100%;
   padding: 0px 50px 32px 50px;
 }
-
-/* Phone */
-@media (max-width: 599px) {
-  .main {
-    /* background-color: blue; */
-    background-color: white;
-  }
-}
-
-/* Tablet */
-@media (min-width: 600px) and (max-width: 899px) {
-  .main {
-    /* background-color: green; */
-    background-color: white;
-  }
-}
-
-/* Desktop */
-@media (min-width: 900px) {
-  .main {
-    /* background-color: red; */
-    background-color: white;
-  }
-}
