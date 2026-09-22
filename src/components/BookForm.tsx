@@ -1,7 +1,7 @@
 "use client";
 
 import { Done } from "@mui/icons-material";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, Rating, TextField, Typography } from "@mui/material";
 import type { FormEvent } from "react";
 import { useState } from "react";
 import type { Book } from "@/types/book";
@@ -229,6 +229,37 @@ export default function BookForm({
         rows={3}
         fullWidth
       />
+
+      <Box sx={{ display: "flex" }}>
+        <Typography component="legend" sx={{ mr: 1 }}>
+          Rating:
+        </Typography>
+
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            gap: 1
+          }}
+        >
+          <Rating
+            name="rating"
+            value={formData.rating}
+            precision={0.1}
+            max={5}
+            onChange={(_, value) => {
+              setFormData({
+                ...formData,
+                rating: value ?? 5
+              });
+            }}
+          />
+
+          <Typography variant="body2" color="text.secondary">
+            ({(formData.rating ?? 0).toFixed(1)})
+          </Typography>
+        </Box>
+      </Box>
 
       <Box
         sx={{

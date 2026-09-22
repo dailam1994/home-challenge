@@ -34,6 +34,9 @@ export const sortBooks = (books: Book[], sortBy: string): Book[] => {
       case "price-desc":
         return b.price - a.price;
 
+      case "popularity-desc":
+        return b.rating - a.rating;
+
       default:
         return 0;
     }

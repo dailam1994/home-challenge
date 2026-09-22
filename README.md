@@ -21,7 +21,7 @@ improvements, and new features in the future.
 
 3. Deleting a book displays a JavaScript alert. Replace this with modern UX. DONE
 
-4. Add a rating system that goes up to 5 stars.
+4. Add a rating system that goes up to 5 stars. DONE
 
 5. There is a bug in the code. Find it and fix it.
 

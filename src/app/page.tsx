@@ -252,7 +252,7 @@ export default function Page() {
                     onChange={(event) => setSortBy(event.target.value)}
                     sx={{
                       height: 40,
-                      width: 200,
+                      width: 240,
                       bgcolor: "background.paper",
                       fontSize: "0.875rem"
                     }}
@@ -264,6 +264,9 @@ export default function Page() {
                     </MenuItem>
                     <MenuItem value="price-desc">
                       Price (Highest - Lowest)
+                    </MenuItem>
+                    <MenuItem value="popularity-desc">
+                      Popularity (Highest - Lowest)
                     </MenuItem>
                   </Select>
                 </FormControl>
@@ -393,8 +396,8 @@ export default function Page() {
               onChange={(event) => setSearch(event.target.value)}
               placeholder="Search title..."
               size="small"
-              fullWidth
               sx={{
+                flex: 1,
                 bgcolor: "background.paper",
                 "& .MuiInputBase-root": {
                   height: 40
@@ -437,6 +440,9 @@ export default function Page() {
                 <MenuItem value="title-desc">Title (Z - A)</MenuItem>
                 <MenuItem value="price-asc">Price (Lowest - Highest)</MenuItem>
                 <MenuItem value="price-desc">Price (Highest - Lowest)</MenuItem>
+                <MenuItem value="popularity-desc">
+                  Popularity (Highest - Lowest)
+                </MenuItem>
               </Select>
             </FormControl>
           </Box>

@@ -6,6 +6,7 @@ import {
   CardActions,
   CardContent,
   IconButton,
+  Rating,
   Typography
 } from "@mui/material";
 import { alpha } from "@mui/material/styles";
@@ -48,6 +49,14 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
 
       <CardContent sx={{ flexGrow: 1 }}>
         <Typography variant="h6">{book.title}</Typography>
+
+        <Box sx={{ display: "flex", alignItems: "center", mt: 1 }}>
+          <Rating value={book.rating} precision={0.1} max={5} readOnly />
+          <Typography variant="body2" color="text.secondary">
+            ({book.rating.toFixed(1)})
+          </Typography>
+        </Box>
+
         <Typography>{book.author}</Typography>
 
         <Typography

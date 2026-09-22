@@ -7,24 +7,28 @@ const books = [
     id: 1,
     title: "Dune",
     price: 25.99,
+    rating: 4.8,
     genres: ["Science Fiction", "Space Opera"]
   },
   {
     id: 2,
     title: "The Hobbit",
     price: 15.99,
+    rating: 4.5,
     genres: ["Fantasy", "Classic"]
   },
   {
     id: 3,
     title: "Neuromancer",
     price: 19.99,
+    rating: 3.9,
     genres: ["Science Fiction", "Cyberpunk"]
   },
   {
     id: 4,
     title: "A Game of Thrones",
     price: 29.99,
+    rating: 4.2,
     genres: ["Fantasy", "Epic Fantasy"]
   }
 ] as Book[];
@@ -111,5 +115,11 @@ describe("sortBooks", () => {
     expect(result.map((book) => book.price)).toEqual([
       29.99, 25.99, 19.99, 15.99
     ]);
+  });
+
+  it("sorts books by popularity from highest to lowest", () => {
+    const result = sortBooks(books, "popularity-desc");
+
+    expect(result.map((book) => book.rating)).toEqual([4.8, 4.5, 4.2, 3.9]);
   });
 });
