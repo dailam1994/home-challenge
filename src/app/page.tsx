@@ -86,12 +86,11 @@ export default function Page() {
     try {
       setBooks(
         books.map((book) =>
-          book.id === selectedBook?.id ? { ...updatedBook, ...book } : book
+          book.id === selectedBook?.id ? { ...book, ...updatedBook } : book
         )
       );
       setSuccessMessage("OK: Book updated successfully.");
       setIsSubmitted(true);
-      setSelectedBook(undefined);
     } catch (e) {
       setErrorMessage("Bad Request: Failed to update book.");
       console.error("Failed to update book:", e);

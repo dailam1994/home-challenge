@@ -23,9 +23,17 @@ improvements, and new features in the future.
 
 4. Add a rating system that goes up to 5 stars. DONE
 
-5. There is a bug in the code. Find it and fix it.
+5. There is a bug in the code. Find it and fix it. DONE
 
 [Explain here what the bug was and how you fixed it]
+Bug 1: Editing a book did not reflect the updated values. In handleUpdateBook(), the object spread order was incorrect,
+causing the existing book properties to overwrite the updated properties.
+Fix 1: Reversed the object spread order from { ...updatedBook, ...book } to { ...book, ...updatedBook },
+allowing the updated book values to correctly overwrite the existing values.
+
+Bug 2: User-provided cover image values were passed directly to Next.js <Image>, allowing unsupported sources to cause a
+runtime error.
+Fix 2: Added a guard to only render <Image> for supported local image paths. Invalid or unsupported sources now display a fallback instead of crashing the application.
 
 Good luck and have fun!
 

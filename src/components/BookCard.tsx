@@ -20,6 +20,11 @@ interface BookCardProps {
 }
 
 export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
+  const isValidImageSrc = (src: string): boolean => {
+    return src.startsWith("/");
+  };
+  const hasValidImageSrc = isValidImageSrc(book.coverImage);
+
   return (
     <Card
       variant="outlined"
@@ -37,14 +42,38 @@ export default function BookCard({ book, onEdit, onDelete }: BookCardProps) {
           width: "100%"
         }}
       >
-        <Image
-          src={book.coverImage}
-          alt={`Cover of ${book.title}`}
-          fill
-          style={{ objectFit: "cover" }}
-          sizes="(max-width: 768px) 100vw, 50vw"
-          priority={book.id === 1}
-        />
+        {hasValidImageSrc ? (
+          <Image
+            src={book.coverImage}
+            alt={`Cover of ${book.title}`}
+            fill
+            style={{ objectFit: "cover" }}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            priority={book.id === 1}
+          />
+        ) : (
+          <Box
+            sx={{
+              height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 3,
+              bgcolor: "background.default"
+            }}
+          >
+            <Typography
+              variant="h5"
+              align="center"
+              sx={{
+                fontWeight: 600,
+                overflowWrap: "anywhere"
+              }}
+            >
+              {book.coverImage}
+            </Typography>
+          </Box>
+        )}
       </Box>
 
       <CardContent sx={{ flexGrow: 1 }}>
